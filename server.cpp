@@ -251,6 +251,8 @@ string UnencodeUrlEncoding( string &path )
                }
             }
          }
+      else if (c == '+')
+         result += ' ';
       else
          result += c;
 
