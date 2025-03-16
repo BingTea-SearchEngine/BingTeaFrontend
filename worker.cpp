@@ -1,4 +1,5 @@
 // g++ worker.cpp -o worker
+// ifconfig | grep "inet "
 #include <iostream>
 #include <string>
 #include <sstream>
