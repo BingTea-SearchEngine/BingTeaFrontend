@@ -436,10 +436,41 @@ void *Talk( void *talkSocket )
    if (requestedPath.find(prefix) != std::string::npos) {
       std::string query = requestedPath.substr(requestedPath.find(prefix) + prefix.length());
 
+      // SEND this query to other laptop(s)
+        // Send query to another computer over TCP
+        int sock = socket(AF_INET, SOCK_STREAM, 0);
+        if (sock < 0) {
+            std::cerr << "Error creating socket" << std::endl;
+            return;
+        }
+
+        struct sockaddr_in serverAddr;
+        serverAddr.sin_family = AF_INET;
+        serverAddr.sin_port = htons(8000); // Replace with the actual port
+        inet_pton(AF_INET, "???", &serverAddr.sin_addr); // Replace with actual IP
+
+        if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
+            std::cerr << "Connection failed" << std::endl;
+            close(sock);
+            return;
+        }
+        
+        // that other laptop will do some work
+        send(sock, query.c_str(), query.size(), 0);
+
+        // receive the response from the worker laptop(s)
+        char buffer[1024] = {0};
+        int bytesReceived = recv(sock, buffer, sizeof(buffer) - 1, 0);
+        close(sock);
+
+        std::string serverResponse = (bytesReceived > 0) ? std::string(buffer, bytesReceived) : "Error receiving response";
+
+      // display the result
+
       // Construct the HTML response body
       std::ostringstream responseBody;
       responseBody << "<!DOCTYPE html>\n<html>\n<head>\n<title>Search Result</title>\n</head><body>\n";
-      responseBody << "<h1>You tried to search for " << query << "</h1>";
+      responseBody << "<h1>You tried to search for " << serverResponse << "</h1>";
       responseBody << "</body>\n</html>\n";
 
       std::string bodyStr = responseBody.str();
