@@ -37,6 +37,7 @@
 #include <cassert>
 #include <cstdio>
 #include <stdarg.h>
+#include <arpa/inet.h>
 using namespace std;
 
 
@@ -441,18 +442,18 @@ void *Talk( void *talkSocket )
         int sock = socket(AF_INET, SOCK_STREAM, 0);
         if (sock < 0) {
             std::cerr << "Error creating socket" << std::endl;
-            return;
+            return nullptr;
         }
 
         struct sockaddr_in serverAddr;
         serverAddr.sin_family = AF_INET;
         serverAddr.sin_port = htons(8000); // Replace with the actual port
-        inet_pton(AF_INET, "???", &serverAddr.sin_addr); // Replace with actual IP
+        inet_pton(AF_INET, "67.194.30.171", &serverAddr.sin_addr); // Replace with actual IP
 
         if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
             std::cerr << "Connection failed" << std::endl;
             close(sock);
-            return;
+            return nullptr;
         }
         
         // that other laptop will do some work
