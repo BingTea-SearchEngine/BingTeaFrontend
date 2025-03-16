@@ -58,13 +58,15 @@ int main() {
         }
 
         std::string query(buffer, bytesRead);
+        std::cout << "Received the query which is " << query << '\n';
 
         // Append monotonically increasing integer
         std::string responseStr = query + std::to_string(ID);
+        std::cout << "Gonna send back " << responseStr << '\n';
 
         // Send response back to master
         send(new_socket, responseStr.c_str(), responseStr.size(), 0);
-
+        std::cout << "Done" << std::endl;
         // Close connection
         close(new_socket);
     }
