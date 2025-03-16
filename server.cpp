@@ -430,8 +430,38 @@ void *Talk( void *talkSocket )
       return nullptr;
    }
 
-   if (actualPath.c_str() != "/" && actualPath.c_str() != "/index.html") {
+   std::string prefix = "/search?query=";
+   if (requestedPath.find(prefix) != std::string::npos) {
+      std::string query = requestedPath.substr(requestedPath.find(prefix) + prefix.length());
+
+      // Construct the HTML response body
+      std::ostringstream responseBody;
+      responseBody << "<!DOCTYPE html>\n<html>\n<head>\n<title>Search Result</title>\n</head><body>\n";
+      responseBody << "<h1>You tried to search for " << query << "</h1>";
+      responseBody << "</body>\n</html>\n";
+
+      std::string bodyStr = responseBody.str();
+
+      // Implement HTTP response header
+      std::ostringstream responseHeader;
+      responseHeader << "HTTP/1.1 200 OK\r\n";
+      responseHeader << "Content-Length: " << bodyStr.size() << "\r\n";
+      responseHeader << "Content-Type: text/html\r\n";
+      responseHeader << "Connection: close\r\n\r\n";
+
+      std::string headerStr = responseHeader.str();
+      
+      send(talkSocketFd, headerStr.c_str(), headerStr.size(), 0);
+
+      send(talkSocketFd, bodyStr.c_str(), bodyStr.size(), 0);
+      return nullptr;
+   }
+
+
+   if (strcmp(requestedPath.c_str(), "/") != 0 && strcmp(requestedPath.c_str(), "/index.html") != 0) {
     debugPrint("User tried to access something that is not the base directory or the index.html file\n");
+    debugPrint(requestedPath.c_str());
+    debugPrint("\n");
     AccessDenied(talkSocketFd);
     close(talkSocketFd);
     return nullptr;
