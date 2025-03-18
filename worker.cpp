@@ -62,6 +62,7 @@ int main() {
 
         // Append monotonically increasing integer
         std::string responseStr = query + std::to_string(ID);
+        ID++;
         std::cout << "Gonna send back " << responseStr << '\n';
 
         // Send response back to master
