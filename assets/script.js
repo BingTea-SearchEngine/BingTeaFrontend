@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("User searched for:", query);
 
       // Example: Send the query to a server or device for processing
-      fetch("https://yourserver.com/search", {
+      fetch("http://localhost:8001/search", {
           method: "POST",
           headers: {
               "Content-Type": "application/json",
