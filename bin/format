@@ -1,0 +1,6 @@
+#!/bin/bash
+
+find ./src/* -iname '*.hpp' -o -iname '*.cpp' | xargs clang-format -style=file -i
+find ./lib/* -iname '*.hpp' -o -iname '*.cpp' | xargs clang-format -style=file -i
+find ./tests -iname '*.h' -o -iname '*.cpp' | xargs clang-format -style=file -i
+
