@@ -1,7 +1,8 @@
 #include "BingTeaFrontend.hpp"
 
-BingTeaFrontend::BingTeaFrontend(int port, std::string assetPath)
-    : _assetPath(assetPath), engine(SearchEngine()) {
+BingTeaFrontend::BingTeaFrontend(int port, std::string assetPath,
+                                 std::string ipPath)
+    : _assetPath(assetPath), engine(SearchEngine(ipPath)) {
     socklen_t talkAddressLength = sizeof(_talkAddress);
     memset(&_listenAddress, 0, sizeof(_listenAddress));
     memset(&_talkAddress, 0, sizeof(_talkAddress));
@@ -38,6 +39,7 @@ void BingTeaFrontend::Start() {
 }
 
 void* BingTeaFrontend::HandleConnection(int talkSocketFd) {
+    auto startTime = std::chrono::steady_clock::now();
     char buffer[4096];
     ssize_t bytesRecvd = 0;
     std::string httpRequest;
@@ -85,10 +87,9 @@ void* BingTeaFrontend::HandleConnection(int talkSocketFd) {
             searchTerm = queryString.substr(6);  // skip "query="
         }
 
-        spdlog::info("Query: {}", queryString);
-        std::string result = "";
+        // SEARCH
+        std::string result = engine.Search(searchTerm);
 
-        result = "<h1>Results for: " + searchTerm + "</h1>";
         std::string response =
             "HTTP/1.1 200 OK\r\n"
             "Content-Type: text/html\r\n"
@@ -99,13 +100,21 @@ void* BingTeaFrontend::HandleConnection(int talkSocketFd) {
             result;
 
         send(talkSocketFd, response.c_str(), response.size(), 0);
+        auto endTime = std::chrono::steady_clock::now();
+        double time =
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                endTime - startTime)
+                .count();
+        spdlog::info("Query took {} ms", time);
         close(talkSocketFd);
         return nullptr;
     }
 
     if (strcmp(requestedPath.c_str(), "/") != 0 &&
         strcmp(requestedPath.c_str(), "/index.html") != 0 &&
-        strcmp(requestedPath.c_str(), "/script.js") != 0) {
+        strcmp(requestedPath.c_str(), "/script.js") != 0 &&
+        strcmp(requestedPath.c_str(), "/bingtealogo.png") != 0 &&
+        strcmp(requestedPath.c_str(), "/favicon.ico") !=0 ){
         spdlog::warn("User tried invalid file access");
         send(talkSocketFd, accessDenied, sizeof(accessDenied) - 1, 0);
         close(talkSocketFd);
@@ -201,12 +210,13 @@ int main(int argc, char** argv) {
 
     int port = program.get<int>("-p");
     std::string assetPath = program.get<std::string>("-a");
-    std::string serverIps = program.get<std::string>("-s");
+    std::string serverIpPath = program.get<std::string>("-s");
 
     spdlog::info("Port: {}", port);
     spdlog::info("Asset Path: {}", assetPath);
+    spdlog::info("Server IP addresses path: {}", serverIpPath);
 
-    BingTeaFrontend bt(port, assetPath);
+    BingTeaFrontend bt(port, assetPath, serverIpPath);
 
     spdlog::info("Starting frontend server");
     bt.Start();

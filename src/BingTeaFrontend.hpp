@@ -18,10 +18,12 @@
 #include <unistd.h>
 #include <cassert>
 #include <cstdio>
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <chrono>
 
 #include "SearchEngine.hpp"
 #include "Utils.hpp"
@@ -30,7 +32,7 @@ using std::cout, std::endl;
 
 class BingTeaFrontend {
    public:
-    BingTeaFrontend(int port, std::string assetPath);
+    BingTeaFrontend(int port, std::string assetPath, std::string ipPath);
 
     void Start();
 

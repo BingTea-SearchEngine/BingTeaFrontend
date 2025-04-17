@@ -1,17 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bing Tea Search</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bing Tea Search</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #202124;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px; /* Controls spacing between logo and input */
+    }
+
+    .logo {
+      width: 500px;
+    }
+
+    input[type="text"] {
+      width: 600px;
+      padding: 14px 24px;
+      font-size: 18px;
+      border-radius: 32px;
+      border: none;
+      background-color: #303134;
+      color: white;
+      outline: none;
+      transition: box-shadow 0.2s ease;
+    }
+
+    input[type="text"]:focus {
+      box-shadow: 0 0 6px 2px #8ab4f8;
+    }
+
+    .buttons {
+      margin-top: 24px;
+    }
+
+    .buttons button {
+      background-color: #303134;
+      color: white;
+      border: 1px solid #5f6368;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      margin: 0 6px;
+      cursor: pointer;
+    }
+
+    .buttons button:hover {
+      background-color: #3c4043;
+    }
+  </style>
 </head>
 <body>
-    <h1>Bing Tea Search</h1>
-    <form action="/search" method="GET">
-        <input type="text" name="query" placeholder="Enter your search...">
-        <button type="submit">Search</button>
-    </form>
-
-    <!-- <script src="script.js"></script> -->
+  <form action="/search" method="GET" class="container">
+    <!-- Replace with your actual image path -->
+    <img src="/bingtealogo.png" alt="Bing Tea Logo" class="logo" />
+    <input type="text" name="query" placeholder="Search Bing Tea..." />
+  </form>
 </body>
 </html>
