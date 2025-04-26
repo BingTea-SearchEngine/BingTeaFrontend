@@ -3,8 +3,12 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <regex>
+#include <iostream>
 
-std::string renderHtml(const std::string& query, const std::vector<std::string>& links);
+#include "IndexInterface.hpp"
+
+std::string renderHtml(const std::string& query, const std::vector<doc_t>& links);
 
 const std::string HTML_HEADER_PRE = R"(
 <!DOCTYPE html>
@@ -69,6 +73,27 @@ const std::string HTML_HEADER_PRE = R"(
 
     .result a:hover {
       text-decoration: underline;
+    }
+
+    .result {
+      margin-bottom: 24px;
+    }
+
+    .title {
+      font-size: 18px;
+      color: #4a90e2;
+      text-decoration: none;
+    }
+
+    .url {
+      font-size: 13px;
+      color: #ccc;
+    }
+
+    .description {
+      font-size: 15px;
+      color: #f0f0f0;
+      margin-top: 8px;  /* Add space between URL and snippet */
     }
   </style>
 </head>

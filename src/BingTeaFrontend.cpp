@@ -17,6 +17,9 @@ BingTeaFrontend::BingTeaFrontend(int port, std::string assetPath,
         exit(1);
     }
 
+    int opt = 1;
+    setsockopt(_listenSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
     if (bind(_listenSocket, (struct sockaddr*)&_listenAddress,
              sizeof(_listenAddress)) == -1) {
         spdlog::error("Bind failed");
