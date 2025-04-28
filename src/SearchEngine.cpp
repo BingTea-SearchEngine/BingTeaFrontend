@@ -51,10 +51,6 @@ std::string SearchEngine::Search(std::string query) {
         }
     }
 
-    std::sort(results.begin(), results.end(), [](const doc_t& a, const doc_t& b) {
-        return a.rankingScore > b.rankingScore;
-    });
-
     for (size_t deadServer : deadServers) {
         spdlog::info("Removing {} from clients list", deadServer);
         _clients.erase(_clients.begin() + deadServer);
@@ -64,6 +60,11 @@ std::string SearchEngine::Search(std::string query) {
         spdlog::error("Lost connection to all index servers, exiting");
         exit(EXIT_FAILURE);
     }
+
+    // RANK
+    std::sort(results.begin(), results.end(), [](const doc_t& a, const doc_t& b) {
+        return a.rankingScore > b.rankingScore;
+    });
 
     return renderHtml(query, results);
 }
