@@ -1,8 +1,8 @@
 #include "BingTeaFrontend.hpp"
 
 BingTeaFrontend::BingTeaFrontend(int port, std::string assetPath,
-                                 std::string ipPath)
-    : _assetPath(assetPath), engine(SearchEngine(ipPath)) {
+                                 std::string ipPath, std::string modelPath)
+    : _assetPath(assetPath), engine(SearchEngine(ipPath, modelPath)) {
     socklen_t talkAddressLength = sizeof(_talkAddress);
     memset(&_listenAddress, 0, sizeof(_listenAddress));
     memset(&_talkAddress, 0, sizeof(_talkAddress));
@@ -202,6 +202,10 @@ int main(int argc, char** argv) {
     program.add_argument("-s", "--serverips")
         .default_value("../serverips.txt")
         .help("Server IP and port file");
+    
+    program.add_argument("-m", "--modelpath")
+        .default_value("../model.ubj")
+        .help("Path to model");
 
     try {
         program.parse_args(argc, argv);
@@ -214,12 +218,13 @@ int main(int argc, char** argv) {
     int port = program.get<int>("-p");
     std::string assetPath = program.get<std::string>("-a");
     std::string serverIpPath = program.get<std::string>("-s");
+    std::string modelPath = program.get<std::string>("-m");
 
     spdlog::info("Port: {}", port);
     spdlog::info("Asset Path: {}", assetPath);
     spdlog::info("Server IP addresses path: {}", serverIpPath);
 
-    BingTeaFrontend bt(port, assetPath, serverIpPath);
+    BingTeaFrontend bt(port, assetPath, serverIpPath, modelPath);
 
     spdlog::info("Starting frontend server");
     bt.Start();

@@ -37,26 +37,23 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Gateway)
 
 FetchContent_Declare(
-    ExpressionParser
-    GIT_REPOSITORY https://github.com/BingTea-SearchEngine/ExpressionParser.git
-    GIT_TAG main
-)
-FetchContent_MakeAvailable(ExpressionParser)
-
-FetchContent_Declare(
     IndexInterface
     GIT_REPOSITORY https://github.com/BingTea-SearchEngine/IndexInterface.git
     GIT_TAG main
 )
 FetchContent_MakeAvailable(IndexInterface)
 
+FetchContent_Declare(
+    xgboost
+    GIT_REPOSITORY https://github.com/dmlc/xgboost.git
+    GIT_TAG        release_3.0.0  # or whatever version you want
+)
+FetchContent_MakeAvailable(xgboost)
+
 set(GATEWAY_SOURCE_DIR ${gateway_SOURCE_DIR})
 set(GATEWAY_INCLUDE_DIR "${gateway_SOURCE_DIR}/lib")
 message(STATUS "Gateway project source directory: ${GATEWAY_SOURCE_DIR}")
 message(STATUS "Gateway include directory: ${GATEWAY_INCLUDE_DIR}")
-
-set(EXPRESSIONPARSER_SOURCE_DIR ${expressionparser_SOURCE_DIR})
-set(EXPRESSIONPARSER_INCLUDE_DIR "${expressionparser_SOURCE_DIR}/lib")
 
 set(INDEXINTERFACE_SOURCE_DIR ${indexinterface_SOURCE_DIR})
 set(INDEXINTERFACE_INCLUDE_DIR "${indexinterface_SOURCE_DIR}/lib")
@@ -64,8 +61,8 @@ set(INDEXINTERFACE_INCLUDE_DIR "${indexinterface_SOURCE_DIR}/lib")
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
 add_executable(${THIS} src/BingTeaFrontend.cpp src/Utils.cpp src/SearchEngine.cpp src/RenderHTML.cpp)
-target_link_libraries(${THIS} PUBLIC spdlog::spdlog argparse GatewayClient IndexInterface)
-# target_include_directories(${THIS} PU)
+target_link_libraries(${THIS} PUBLIC spdlog::spdlog argparse GatewayClient IndexInterface xgboost)
+target_include_directories(${THIS} PUBLIC ${xgboost_SOURCE_DIR}/include)
 
 # Specify build type
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type")

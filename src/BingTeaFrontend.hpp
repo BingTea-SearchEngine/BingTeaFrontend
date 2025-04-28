@@ -32,7 +32,7 @@ using std::cout, std::endl;
 
 class BingTeaFrontend {
    public:
-    BingTeaFrontend(int port, std::string assetPath, std::string ipPath);
+    BingTeaFrontend(int port, std::string assetPath, std::string ipPath, std::string modelPath);
 
     void Start();
 

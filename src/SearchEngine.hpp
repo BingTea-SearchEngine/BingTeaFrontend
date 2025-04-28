@@ -9,6 +9,8 @@
 #include <vector>
 #include <mutex>
 
+#include <xgboost/c_api.h>
+
 #include "GatewayClient.hpp"
 #include "IndexInterface.hpp"
 #include "RenderHTML.hpp"
@@ -19,12 +21,16 @@
  * */
 class SearchEngine {
    public:
-    SearchEngine(std::string ipPath);
+    SearchEngine(std::string ipPath, std::string modelPath);
 
     std::string Search(std::string query);
 
    private:
+    std::vector<doc_t> rank(std::vector<doc_t> input);
+
     std::vector<std::unique_ptr<Client>> _clients;
 
     std::mutex _m;
+    
+    std::string modelPath;
 };
